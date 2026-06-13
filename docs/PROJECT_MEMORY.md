@@ -69,14 +69,22 @@ outside that permission must be original. See `LEGAL.md`.
 
 ## Current implementation state
 
-Foundation build 0.1.0:
+Tactical sandbox build 0.2.0:
 
 - Godot project structure;
 - desktop title screen;
 - Portuguese/English toggle;
 - deterministic campaign seed service;
 - serializable simulation clock skeleton;
+- campaign session autoload;
+- logical isometric grid and obstacle cells;
+- directly controlled level-1 Fighter;
+- deterministic d20 attacks, armor class, damage and critical hits;
+- alternating hero/enemy team turns;
+- keyboard, mouse and basic controller input;
+- visible combat roll log;
+- deterministic combat unit test and tactical scene smoke test;
 - archived browser prototype.
 
-Godot 4.6.3 imported the project successfully in headless mode. Runtime and
-visual validation of future playable scenes remains part of each milestone.
+Godot 4.6.3 imports and runs the project successfully. The tactical scene was
+also rendered and visually inspected at 1280x720.

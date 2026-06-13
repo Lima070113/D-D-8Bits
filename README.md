@@ -8,7 +8,7 @@ as divindades e todo conteudo nao coberto pelo SRD serao originais.
 
 ## Estado
 
-O projeto esta na fase de fundacao tecnica e pre-producao. A visao completa esta
+O projeto esta na fase de sandbox tatico e pre-producao. A visao completa esta
 registrada em `docs/GAME_DESIGN.md`; a ordem de implementacao esta em
 `docs/ROADMAP.md`.
 
@@ -18,8 +18,18 @@ registrada em `docs/GAME_DESIGN.md`; a ordem de implementacao esta em
 2. Importe `project.godot` pelo gerenciador de projetos.
 3. Execute a cena principal com `F6` ou o projeto com `F5`.
 
-O primeiro executavel implementa apenas a fundacao: tela inicial, selecao de
-idioma e criacao deterministica de uma campanha por `seed`.
+## Como jogar o sandbox atual
+
+1. Execute o projeto com `F6` ou `F5`.
+2. Escolha o idioma e crie uma campanha com qualquer `seed`.
+3. Na arena, mova o cursor com `WASD`, setas ou direcional do controle.
+4. Pressione `Enter`, clique ou use o botao principal do controle para mover.
+5. Aproxime-se de um inimigo e selecione-o para atacar.
+6. Pressione `E` ou o botao **Encerrar turno** para permitir a acao inimiga.
+
+O sandbox 0.2.0 possui uma arena isometrica, movimento por celulas, duas unidades
+inimigas, turnos alternados, ataques com d20, CA, dano, criticos e registro das
+rolagens. Ele e o primeiro recorte do combate, nao a campanha completa.
 
 ## Plataformas
 

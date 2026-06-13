@@ -1,6 +1,35 @@
 key,en,pt_BR
 APP_TITLE,D&D 8Bits,D&D 8Bits
+TITLE_EYEBROW,A PROCEDURAL FANTASY RPG,UM RPG DE FANTASIA PROCEDURAL
+TITLE_SUBTITLE,"Every campaign creates a unique world, history, and legacy.","Cada campanha cria um mundo, uma história e um legado únicos."
 NEW_CAMPAIGN,Create New Campaign,Criar Nova Campanha
 CONTINUE,Continue,Continuar
 SETTINGS,Settings,Configuracoes
 QUIT,Quit,Sair
+SEED_INSTRUCTION,Enter a seed or leave it blank to discover a new world.,Insira uma seed ou deixe em branco para descobrir um novo mundo.
+YES,YES,SIM
+NO,NO,NÃO
+UNIT_ALDRIC,Aldric,Aldric
+UNIT_RAIDER,Raider,Saqueador
+UNIT_SCOUT,Scout,Batedor
+COMBAT_STARTED,The battle has begun.,A batalha começou.
+COMBAT_RESTARTED,The battle restarted.,A batalha recomeçou.
+COMBAT_HERO_MOVED,Aldric moved. Movement remaining: %d.,Aldric moveu. Movimento restante: %d.
+COMBAT_ENEMY_MOVED,%s moves closer.,%s se aproxima.
+COMBAT_HIT,%s attacks %s: d20 %d + %d = %d vs AC %d. %d damage.%s,%s ataca %s: d20 %d + %d = %d contra CA %d. %d de dano.%s
+COMBAT_MISS,%s attacks %s: d20 %d + %d = %d vs AC %d. Miss.,%s ataca %s: d20 %d + %d = %d contra CA %d. Errou.
+COMBAT_CRITICAL,CRITICAL!,CRÍTICO!
+COMBAT_VICTORY,VICTORY!,VITÓRIA!
+COMBAT_DEFEAT,DEFEAT.,DERROTA.
+COMBAT_ROUND,ROUND %d | %s,RODADA %d | %s
+COMBAT_PLAYER_TURN,YOUR TURN,SEU TURNO
+COMBAT_ENEMY_TURN,ENEMY TURN,TURNO INIMIGO
+COMBAT_HERO_STATS,"ALDRIC - FIGHTER 1\nHP %d/%d | AC %d\nMovement %d | Action %s","ALDRIC - GUERREIRO 1\nPV %d/%d | CA %d\nMovimento %d | Ação %s"
+COMBAT_END_TURN,END TURN [E],ENCERRAR TURNO [E]
+COMBAT_RESTART,RESTART BATTLE,REINICIAR BATALHA
+COMBAT_INSTRUCTIONS,"WASD/arrows: move cursor\nEnter/click: move or attack\nApproach and select an enemy.\nEach round restores movement.","WASD/setas: mover o cursor\nEnter/clique: mover ou atacar\nAproxime-se e selecione um inimigo.\nCada rodada restaura seu movimento."
+COMBAT_VICTORY_STATUS,Victory! The raiders were defeated.,Vitória! Os saqueadores foram derrotados.
+COMBAT_DEFEAT_STATUS,Aldric fell in battle.,Aldric caiu em batalha.
+COMBAT_ENEMIES_ACTING,The enemies are acting...,Os inimigos estão agindo...
+COMBAT_TARGET_STATS,%s | HP %d/%d | AC %d,%s | PV %d/%d | CA %d
+COMBAT_SELECTED_CELL,"Selected cell: %d, %d","Célula selecionada: %d, %d"

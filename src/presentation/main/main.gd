@@ -5,6 +5,7 @@ const CampaignSeed = preload("res://src/simulation/campaign/campaign_seed.gd")
 var seed_service := CampaignSeed.new()
 var selected_locale := "pt_BR"
 
+var eyebrow_label: Label
 var title_label: Label
 var subtitle_label: Label
 var seed_input: LineEdit
@@ -37,12 +38,11 @@ func _build_interface() -> void:
 	layout.add_theme_constant_override("separation", 22)
 	margin.add_child(layout)
 
-	var eyebrow := Label.new()
-	eyebrow.text = "A PROCEDURAL FANTASY RPG"
-	eyebrow.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	eyebrow.add_theme_color_override("font_color", Color("#c89945"))
-	eyebrow.add_theme_font_size_override("font_size", 16)
-	layout.add_child(eyebrow)
+	eyebrow_label = Label.new()
+	eyebrow_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	eyebrow_label.add_theme_color_override("font_color", Color("#c89945"))
+	eyebrow_label.add_theme_font_size_override("font_size", 16)
+	layout.add_child(eyebrow_label)
 
 	title_label = Label.new()
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -89,7 +89,7 @@ func _build_interface() -> void:
 	layout.add_child(status_label)
 
 	var version := Label.new()
-	version.text = "FOUNDATION BUILD 0.1.0"
+	version.text = "TACTICAL SANDBOX 0.2.0"
 	version.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	version.add_theme_color_override("font_color", Color("#606979"))
 	layout.add_child(version)
@@ -98,19 +98,12 @@ func _build_interface() -> void:
 func _apply_locale() -> void:
 	TranslationServer.set_locale(selected_locale)
 	var portuguese := selected_locale == "pt_BR"
-	title_label.text = "D&D 8BITS"
-	subtitle_label.text = (
-		"Cada campanha cria um mundo, uma historia e um legado unicos."
-		if portuguese
-		else "Every campaign creates a unique world, history, and legacy."
-	)
-	create_button.text = "CRIAR NOVA CAMPANHA" if portuguese else "CREATE NEW CAMPAIGN"
-	language_button.text = "English" if portuguese else "Portugues"
-	status_label.text = (
-		"Insira uma seed ou deixe em branco para descobrir um novo mundo."
-		if portuguese
-		else "Enter a seed or leave it blank to discover a new world."
-	)
+	eyebrow_label.text = tr("TITLE_EYEBROW")
+	title_label.text = tr("APP_TITLE")
+	subtitle_label.text = tr("TITLE_SUBTITLE")
+	create_button.text = tr("NEW_CAMPAIGN")
+	language_button.text = "English" if portuguese else "Português"
+	status_label.text = tr("SEED_INSTRUCTION")
 
 
 func _toggle_language() -> void:
@@ -121,14 +114,5 @@ func _toggle_language() -> void:
 func _on_create_campaign() -> void:
 	var campaign := seed_service.create_campaign_seed(seed_input.text)
 	seed_input.text = campaign.display_seed
-
-	if selected_locale == "pt_BR":
-		status_label.text = (
-			"Mundo criado: %s | assinatura: %s"
-			% [campaign.display_seed, campaign.world_signature]
-		)
-	else:
-		status_label.text = (
-			"World created: %s | signature: %s"
-			% [campaign.display_seed, campaign.world_signature]
-		)
+	GameSession.start_campaign(campaign, selected_locale)
+	get_tree().change_scene_to_file("res://src/presentation/tactical/TacticalArena.tscn")

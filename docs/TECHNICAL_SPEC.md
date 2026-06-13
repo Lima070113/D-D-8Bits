@@ -191,6 +191,12 @@ Implemented:
 - basic bilingual title screen;
 - campaign seed service;
 - serializable simulation clock.
+- persistent campaign session;
+- isolated tactical unit and combat encounter domain models;
+- logical isometric arena renderer;
+- alternating team turns and deterministic d20 action records;
+- keyboard, mouse and controller-ready input actions;
+- headless combat and scene smoke tests.
 
 Validated with Godot 4.6.3:
 

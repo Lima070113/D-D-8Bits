@@ -12,8 +12,8 @@ Goal: reproducible desktop project and documented product.
 - [x] campaign seed identity;
 - [x] bilingual startup shell;
 - [x] simulation clock skeleton;
-- [ ] install Godot and validate imports;
-- [ ] automated GDScript tests;
+- [x] install Godot and validate imports;
+- [x] automated GDScript tests;
 - [ ] Windows development export;
 - [ ] macOS export configuration;
 - [ ] CI validation.
@@ -24,12 +24,14 @@ Exit: a clean checkout opens and exports on both target platforms.
 
 Goal: one polished isometric encounter proving the core rules.
 
-- logical isometric grid and camera;
-- keyboard, mouse and controller navigation;
-- one hero with Fighter level 1 rules;
-- alternating initiative;
-- actions, movement, reactions and visible d20 records;
-- height, cover and opportunity attacks;
+- [x] logical isometric grid foundation;
+- [x] keyboard, mouse and basic controller navigation;
+- [x] one hero with Fighter level 1 combat statistics;
+- [x] alternating team initiative;
+- [x] movement, attack action and visible d20 records;
+- [ ] camera movement and zoom;
+- [ ] reactions and opportunity attacks;
+- [ ] height and cover;
 - fire, water and electricity surfaces;
 - one autonomous companion with general orders;
 - enemy morale, surrender and flight;
