@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Crônicas de Bytefall, um pequeno RPG de fantasia em estilo 8-bit."
+    />
+    <title>Crônicas de Bytefall</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="game-shell">
+      <header class="title-bar">
+        <div>
+          <p class="eyebrow">UMA AVENTURA 8-BIT</p>
+          <h1>CRÔNICAS DE BYTEFALL</h1>
+        </div>
+        <button id="restart-button" class="pixel-button secondary" type="button">
+          NOVA JORNADA
+        </button>
+      </header>
+
+      <section class="game-grid">
+        <aside class="panel hero-panel" aria-label="Ficha do herói">
+          <div class="portrait" aria-hidden="true">
+            <div class="pixel-knight"></div>
+          </div>
+          <h2>ALDRIC</h2>
+          <p class="class-name">GUERREIRO NÍVEL <span id="level">1</span></p>
+
+          <div class="stat">
+            <div class="stat-label">
+              <span>PV</span>
+              <span><span id="hp">24</span>/<span id="max-hp">24</span></span>
+            </div>
+            <div class="meter"><div id="hp-bar" class="meter-fill hp"></div></div>
+          </div>
+
+          <div class="stat">
+            <div class="stat-label">
+              <span>XP</span>
+              <span><span id="xp">0</span>/<span id="next-xp">30</span></span>
+            </div>
+            <div class="meter"><div id="xp-bar" class="meter-fill xp"></div></div>
+          </div>
+
+          <dl class="attributes">
+            <div><dt>ATAQUE</dt><dd id="attack">+5</dd></div>
+            <div><dt>DEFESA</dt><dd id="defense">13</dd></div>
+            <div><dt>POÇÕES</dt><dd id="potions">2</dd></div>
+            <div><dt>CHAVE</dt><dd id="key-status">NÃO</dd></div>
+          </dl>
+
+          <div class="quest">
+            <h3>MISSÃO</h3>
+            <p id="quest-text">Encontre a chave rúnica e derrote o guardião.</p>
+          </div>
+        </aside>
+
+        <section class="board-panel">
+          <div class="board-header">
+            <div>
+              <p class="eyebrow">MASMORRA I</p>
+              <h2>CRIPTA DO ECO</h2>
+            </div>
+            <p id="status-text" class="status-text">Explore com WASD ou as setas.</p>
+          </div>
+
+          <div class="canvas-frame">
+            <canvas id="game-canvas" width="576" height="432">
+              Seu navegador não suporta Canvas.
+            </canvas>
+            <div id="end-screen" class="end-screen hidden">
+              <p id="end-kicker" class="eyebrow">FIM DA JORNADA</p>
+              <h2 id="end-title">VITÓRIA!</h2>
+              <p id="end-message"></p>
+              <button id="play-again-button" class="pixel-button" type="button">
+                JOGAR NOVAMENTE
+              </button>
+            </div>
+          </div>
+
+          <div class="mobile-controls" aria-label="Controles de movimento">
+            <button data-move="up" aria-label="Mover para cima">▲</button>
+            <button data-move="left" aria-label="Mover para esquerda">◀</button>
+            <button data-move="down" aria-label="Mover para baixo">▼</button>
+            <button data-move="right" aria-label="Mover para direita">▶</button>
+          </div>
+        </section>
+
+        <aside class="panel log-panel" aria-label="Diário da aventura">
+          <h2>DIÁRIO</h2>
+          <div id="combat-card" class="combat-card hidden">
+            <p class="eyebrow">ENCONTRO</p>
+            <h3 id="enemy-name">INIMIGO</h3>
+            <div class="stat-label">
+              <span>PV</span>
+              <span><span id="enemy-hp">0</span>/<span id="enemy-max-hp">0</span></span>
+            </div>
+            <div class="meter"><div id="enemy-hp-bar" class="meter-fill enemy"></div></div>
+            <div class="combat-actions">
+              <button id="attack-button" class="pixel-button" type="button">ATACAR</button>
+              <button id="potion-button" class="pixel-button secondary" type="button">
+                POÇÃO
+              </button>
+            </div>
+          </div>
+          <ol id="adventure-log" class="adventure-log" aria-live="polite"></ol>
+          <div class="legend">
+            <h3>LEGENDA</h3>
+            <p><span class="legend-swatch chest"></span> Chave rúnica</p>
+            <p><span class="legend-swatch enemy"></span> Inimigo</p>
+            <p><span class="legend-swatch portal"></span> Portal</p>
+          </div>
+        </aside>
+      </section>
+    </main>
+
+    <script src="game.js"></script>
+  </body>
+</html>

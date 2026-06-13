@@ -1,0 +1,41 @@
+; Engine configuration file.
+; Prefer editing through the Godot editor when it is available.
+
+config_version=5
+
+[application]
+
+config/name="D&D 8Bits"
+run/main_scene="res://src/presentation/main/Main.tscn"
+config/features=PackedStringArray("4.3")
+
+[display]
+
+window/size/viewport_width=1280
+window/size/viewport_height=720
+window/size/window_width_override=1280
+window/size/window_height_override=720
+window/stretch/mode="canvas_items"
+
+[internationalization]
+
+locale/fallback="en"
+locale/translations=PackedStringArray("res://localization/ui.en.translation", "res://localization/ui.pt_BR.translation")
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+textures/default_filters/use_nearest_mipmap_filter=false
+textures/canvas_textures/default_texture_filter=0
+
+[input]
+
+ui_accept={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"physical_keycode":4194309), Object(InputEventJoypadButton,"button_index":0)]
+}
+ui_cancel={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"physical_keycode":4194305), Object(InputEventJoypadButton,"button_index":1)]
+}
