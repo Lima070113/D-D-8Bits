@@ -11,9 +11,11 @@ var armor_class: int
 var attack_bonus: int
 var damage_die: int
 var damage_bonus: int
+var attack_range: int
 var movement: int
 var movement_left: int
 var action_available: bool
+var reaction_available: bool
 
 
 func _init(
@@ -26,6 +28,7 @@ func _init(
 	unit_attack_bonus: int,
 	unit_damage_die: int,
 	unit_damage_bonus: int,
+	unit_attack_range: int,
 	unit_movement: int
 ) -> void:
 	id = unit_id
@@ -38,6 +41,7 @@ func _init(
 	attack_bonus = unit_attack_bonus
 	damage_die = unit_damage_die
 	damage_bonus = unit_damage_bonus
+	attack_range = unit_attack_range
 	movement = unit_movement
 	start_turn()
 
@@ -45,6 +49,7 @@ func _init(
 func start_turn() -> void:
 	movement_left = movement
 	action_available = is_alive()
+	reaction_available = is_alive()
 
 
 func is_alive() -> bool:
@@ -69,7 +74,9 @@ func serialize() -> Dictionary:
 		"attack_bonus": attack_bonus,
 		"damage_die": damage_die,
 		"damage_bonus": damage_bonus,
+		"attack_range": attack_range,
 		"movement": movement,
 		"movement_left": movement_left,
 		"action_available": action_available,
+		"reaction_available": reaction_available,
 	}

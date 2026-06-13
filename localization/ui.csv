@@ -24,12 +24,16 @@ COMBAT_DEFEAT,DEFEAT.,DERROTA.
 COMBAT_ROUND,ROUND %d | %s,RODADA %d | %s
 COMBAT_PLAYER_TURN,YOUR TURN,SEU TURNO
 COMBAT_ENEMY_TURN,ENEMY TURN,TURNO INIMIGO
-COMBAT_HERO_STATS,"ALDRIC - FIGHTER 1\nHP %d/%d | AC %d\nMovement %d | Action %s","ALDRIC - GUERREIRO 1\nPV %d/%d | CA %d\nMovimento %d | Ação %s"
+COMBAT_HERO_STATS,"ALDRIC - FIGHTER 1\nHP %d/%d | AC %d\nMovement %d | Action %s | Range %d","ALDRIC - GUERREIRO 1\nPV %d/%d | CA %d\nMovimento %d | Ação %s | Alcance %d"
 COMBAT_END_TURN,END TURN [E],ENCERRAR TURNO [E]
 COMBAT_RESTART,RESTART BATTLE,REINICIAR BATALHA
-COMBAT_INSTRUCTIONS,"WASD/arrows: move cursor\nEnter/click: move or attack\nApproach and select an enemy.\nEach round restores movement.","WASD/setas: mover o cursor\nEnter/clique: mover ou atacar\nAproxime-se e selecione um inimigo.\nCada rodada restaura seu movimento."
+COMBAT_INSTRUCTIONS,"WASD/arrows: move cursor\nEnter/click: move or attack\nQ/R or mouse wheel: zoom\nLeaving melee range provokes a reaction.","WASD/setas: mover o cursor\nEnter/clique: mover ou atacar\nQ/R ou roda do mouse: zoom\nSair do corpo a corpo provoca reação."
 COMBAT_VICTORY_STATUS,Victory! The raiders were defeated.,Vitória! Os saqueadores foram derrotados.
 COMBAT_DEFEAT_STATUS,Aldric fell in battle.,Aldric caiu em batalha.
 COMBAT_ENEMIES_ACTING,The enemies are acting...,Os inimigos estão agindo...
 COMBAT_TARGET_STATS,%s | HP %d/%d | AC %d,%s | PV %d/%d | CA %d
 COMBAT_SELECTED_CELL,"Selected cell: %d, %d","Célula selecionada: %d, %d"
+COMBAT_OPPORTUNITY,[OPPORTUNITY],[OPORTUNIDADE]
+COMBAT_HIGH_GROUND,High ground +1.,Terreno elevado +1.
+COMBAT_COVER,Cover +%d AC.,Cobertura +%d CA.
+COMBAT_FIRE_DAMAGE,%s takes %d fire damage.,%s sofre %d de dano de fogo.

@@ -1,13 +1,10 @@
 extends Control
 
+const TacticalBattlefieldScript = preload("res://src/domain/combat/tactical_battlefield.gd")
+
 const BOARD_SIZE := Vector2i(8, 8)
 const TILE_SIZE := Vector2(72.0, 36.0)
 const BOARD_ORIGIN := Vector2(560.0, 115.0)
-const BLOCKED_CELLS: Array[Vector2i] = [
-	Vector2i(3, 3),
-	Vector2i(3, 4),
-	Vector2i(4, 3),
-]
 
 const COLOR_BACKGROUND := Color("#0c0f16")
 const COLOR_TILE_LIGHT := Color("#34424a")
@@ -18,11 +15,15 @@ const COLOR_MOVE := Color("#5ca37a")
 const COLOR_BLOCKED := Color("#342f36")
 const COLOR_HERO := Color("#4e83bd")
 const COLOR_ENEMY := Color("#b84b4f")
+const COLOR_WATER := Color("#347b91")
+const COLOR_FIRE := Color("#d87532")
 
 var encounter: CombatEncounter = CombatEncounter.new()
 var selected_cell := Vector2i(1, 5)
 var awaiting_enemy_turn := false
 var battle_finished := false
+var camera_zoom := 1.0
+var camera_offset := Vector2.ZERO
 
 var status_label: Label
 var hero_label: Label
@@ -101,6 +102,16 @@ func _build_interface() -> void:
 
 func _draw() -> void:
 	draw_rect(Rect2(Vector2.ZERO, size), COLOR_BACKGROUND)
+	for star in [
+		Vector2(374, 38), Vector2(492, 71), Vector2(716, 42),
+		Vector2(855, 92), Vector2(1137, 34), Vector2(1210, 178),
+	]:
+		draw_circle(star, 1.5, Color("#647386"))
+	draw_rect(Rect2(18, 14, 294, 690), Color("#111722"))
+	draw_rect(Rect2(920, 54, 342, 630), Color("#111722"))
+	draw_rect(Rect2(18, 14, 294, 690), Color("#334052"), false, 2)
+	draw_rect(Rect2(920, 54, 342, 630), Color("#334052"), false, 2)
+	draw_line(Vector2(330, 30), Vector2(900, 30), Color("#c89945"), 2)
 	for diagonal in range(BOARD_SIZE.x + BOARD_SIZE.y - 1):
 		for x in range(BOARD_SIZE.x):
 			var y := diagonal - x
@@ -123,13 +134,18 @@ func _draw() -> void:
 func _draw_cell(cell: Vector2i) -> void:
 	var center := _grid_to_screen(cell)
 	var points := PackedVector2Array([
-		center + Vector2(0, -TILE_SIZE.y / 2.0),
-		center + Vector2(TILE_SIZE.x / 2.0, 0),
-		center + Vector2(0, TILE_SIZE.y / 2.0),
-		center + Vector2(-TILE_SIZE.x / 2.0, 0),
+		center + Vector2(0, -TILE_SIZE.y / 2.0) * camera_zoom,
+		center + Vector2(TILE_SIZE.x / 2.0, 0) * camera_zoom,
+		center + Vector2(0, TILE_SIZE.y / 2.0) * camera_zoom,
+		center + Vector2(-TILE_SIZE.x / 2.0, 0) * camera_zoom,
 	])
 	var color := COLOR_TILE_LIGHT if (cell.x + cell.y) % 2 == 0 else COLOR_TILE_DARK
-	if cell in BLOCKED_CELLS:
+	var surface: int = encounter.battlefield.surface_at(cell)
+	if surface == TacticalBattlefieldScript.SURFACE_WATER:
+		color = color.lerp(COLOR_WATER, 0.65)
+	elif surface == TacticalBattlefieldScript.SURFACE_FIRE:
+		color = color.lerp(COLOR_FIRE, 0.72)
+	if encounter.battlefield.is_blocked(cell):
 		color = COLOR_BLOCKED
 	elif _is_reachable_from_hero(cell):
 		color = color.lerp(COLOR_MOVE, 0.35)
@@ -138,50 +154,97 @@ func _draw_cell(cell: Vector2i) -> void:
 	draw_colored_polygon(points, color)
 	draw_polyline(points + PackedVector2Array([points[0]]), COLOR_TILE_BORDER, 1.5)
 
-	if cell in BLOCKED_CELLS:
-		var top := center - Vector2(0, 18)
+	var elevation: int = encounter.battlefield.elevation_at(cell)
+	if elevation > 0 and not encounter.battlefield.is_blocked(cell):
+		var lower_points := PackedVector2Array()
+		for point in points:
+			lower_points.append(point + Vector2(0, 9 * elevation * camera_zoom))
+		draw_colored_polygon(lower_points, Color("#222932"))
+		draw_polyline(lower_points + PackedVector2Array([lower_points[0]]), COLOR_TILE_BORDER, 1.2)
+
+	if encounter.battlefield.is_blocked(cell):
+		var top := center - Vector2(0, 18) * camera_zoom
 		draw_colored_polygon(
 			PackedVector2Array([
-				top + Vector2(0, -22),
-				top + Vector2(23, -10),
-				top + Vector2(0, 2),
-				top + Vector2(-23, -10),
+				top + Vector2(0, -22) * camera_zoom,
+				top + Vector2(23, -10) * camera_zoom,
+				top + Vector2(0, 2) * camera_zoom,
+				top + Vector2(-23, -10) * camera_zoom,
 			]),
 			Color("#605668")
 		)
 		draw_colored_polygon(
 			PackedVector2Array([
-				top + Vector2(-23, -10),
-				top + Vector2(0, 2),
+				top + Vector2(-23, -10) * camera_zoom,
+				top + Vector2(0, 2) * camera_zoom,
 				center,
-				center + Vector2(-23, -12),
+				center + Vector2(-23, -12) * camera_zoom,
 			]),
 			Color("#403a47")
 		)
+	elif encounter.battlefield.cover_at(cell) > 0:
+		draw_line(
+			center + Vector2(-18, -5) * camera_zoom,
+			center + Vector2(18, 5) * camera_zoom,
+			Color("#a48b68"),
+			5 * camera_zoom
+		)
+
+	if surface == TacticalBattlefieldScript.SURFACE_FIRE:
+		draw_circle(center - Vector2(0, 8) * camera_zoom, 7 * camera_zoom, Color("#ffb347"))
+		draw_circle(center - Vector2(4, 13) * camera_zoom, 4 * camera_zoom, Color("#e84f2f"))
+	elif surface == TacticalBattlefieldScript.SURFACE_WATER:
+		draw_arc(center, 13 * camera_zoom, 0.2, 2.9, 12, Color("#72c8d8"), 2 * camera_zoom)
 
 
 func _draw_unit(unit: TacticalUnit) -> void:
 	var base := _grid_to_screen(unit.grid_position)
 	var color := COLOR_HERO if unit.team == CombatEncounter.TEAM_HERO else COLOR_ENEMY
-	draw_circle(base - Vector2(0, 23), 15, color)
-	draw_rect(Rect2(base.x - 13, base.y - 24, 26, 29), color)
-	draw_circle(base - Vector2(5, 28), 2.5, Color.WHITE)
-	draw_circle(base + Vector2(5, -28), 2.5, Color.WHITE)
-	draw_line(base + Vector2(-15, 8), base + Vector2(15, 8), Color("#10131a"), 5)
+	draw_circle(base + Vector2(0, 7) * camera_zoom, 19 * camera_zoom, Color(0, 0, 0, 0.24))
+	draw_circle(base - Vector2(0, 23) * camera_zoom, 15 * camera_zoom, color)
+	draw_rect(
+		Rect2(
+			base + Vector2(-13, -24) * camera_zoom,
+			Vector2(26, 29) * camera_zoom
+		),
+		color
+	)
+	draw_circle(base + Vector2(-5, -28) * camera_zoom, 2.5 * camera_zoom, Color.WHITE)
+	draw_circle(base + Vector2(5, -28) * camera_zoom, 2.5 * camera_zoom, Color.WHITE)
+	draw_line(
+		base + Vector2(-15, 8) * camera_zoom,
+		base + Vector2(15, 8) * camera_zoom,
+		Color("#10131a"),
+		5 * camera_zoom
+	)
 
 	var hp_ratio := float(unit.hp) / float(unit.max_hp)
-	draw_rect(Rect2(base.x - 20, base.y + 12, 40, 5), Color("#151820"))
-	draw_rect(Rect2(base.x - 20, base.y + 12, 40 * hp_ratio, 5), Color("#61b86b"))
+	draw_rect(
+		Rect2(base + Vector2(-20, 12) * camera_zoom, Vector2(40, 5) * camera_zoom),
+		Color("#151820")
+	)
+	draw_rect(
+		Rect2(
+			base + Vector2(-20, 12) * camera_zoom,
+			Vector2(40 * hp_ratio, 5) * camera_zoom
+		),
+		Color("#61b86b")
+	)
 
 
 func _gui_input(event: InputEvent) -> void:
-	if battle_finished or awaiting_enemy_turn:
-		return
-	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-		var clicked := _screen_to_grid(event.position)
-		if _is_inside_board(clicked):
-			selected_cell = clicked
-			_confirm_selected_cell()
+	if event is InputEventMouseButton and event.pressed:
+		if event.button_index == MOUSE_BUTTON_WHEEL_UP:
+			_set_camera_zoom(camera_zoom + 0.1)
+			return
+		if event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+			_set_camera_zoom(camera_zoom - 0.1)
+			return
+		if event.button_index == MOUSE_BUTTON_LEFT and not battle_finished and not awaiting_enemy_turn:
+			var clicked := _screen_to_grid(event.position)
+			if _is_inside_board(clicked):
+				selected_cell = clicked
+				_confirm_selected_cell()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -201,6 +264,10 @@ func _unhandled_input(event: InputEvent) -> void:
 		_confirm_selected_cell()
 	elif event.is_action_pressed("end_turn"):
 		_end_player_turn()
+	elif event.is_action_pressed("camera_zoom_in"):
+		_set_camera_zoom(camera_zoom + 0.1)
+	elif event.is_action_pressed("camera_zoom_out"):
+		_set_camera_zoom(camera_zoom - 0.1)
 
 	if direction != Vector2i.ZERO:
 		selected_cell = Vector2i(
@@ -223,10 +290,18 @@ func _confirm_selected_cell() -> void:
 			_after_player_action()
 			return
 
-	if encounter.move_unit(hero, selected_cell, BLOCKED_CELLS):
+	var movement_result := encounter.move_unit(hero, selected_cell)
+	if not movement_result.is_empty():
 		_add_log(
 			tr("COMBAT_HERO_MOVED") % hero.movement_left
 		)
+		for reaction in movement_result.reactions:
+			if not reaction.is_empty():
+				_describe_attack(reaction)
+		if movement_result.surface_damage > 0:
+			_add_log(tr("COMBAT_FIRE_DAMAGE") % [tr(hero.display_name), movement_result.surface_damage])
+		if encounter.is_defeat():
+			battle_finished = true
 		_refresh_interface()
 		queue_redraw()
 
@@ -263,10 +338,18 @@ func _run_enemy_team() -> void:
 		else:
 			var step := _enemy_step_toward(enemy, hero)
 			if step != enemy.grid_position:
-				encounter.move_unit(enemy, step, BLOCKED_CELLS)
+				var movement_result := encounter.move_unit(enemy, step)
 				_add_log(
 					tr("COMBAT_ENEMY_MOVED") % tr(enemy.display_name)
 				)
+				for reaction in movement_result.reactions:
+					if not reaction.is_empty():
+						_describe_attack(reaction)
+				if movement_result.surface_damage > 0:
+					_add_log(
+						tr("COMBAT_FIRE_DAMAGE")
+						% [tr(enemy.display_name), movement_result.surface_damage]
+					)
 				queue_redraw()
 				await get_tree().create_timer(0.2).timeout
 			if encounter.can_attack(enemy, hero):
@@ -298,7 +381,7 @@ func _enemy_step_toward(enemy: TacticalUnit, hero: TacticalUnit) -> Vector2i:
 		)
 	)
 	for candidate in candidates:
-		if _is_inside_board(candidate) and encounter.can_move(enemy, candidate, BLOCKED_CELLS):
+		if _is_inside_board(candidate) and encounter.can_move(enemy, candidate):
 			return candidate
 	return enemy.grid_position
 
@@ -325,6 +408,12 @@ func _describe_attack(result: Dictionary) -> void:
 			result.total,
 			result.armor_class,
 		]
+	if result.reaction:
+		message = "%s %s" % [tr("COMBAT_OPPORTUNITY"), message]
+	if result.high_ground:
+		message += " " + tr("COMBAT_HIGH_GROUND")
+	if result.cover_bonus > 0:
+		message += " " + (tr("COMBAT_COVER") % result.cover_bonus)
 	_add_log(message)
 
 
@@ -354,6 +443,7 @@ func _refresh_interface() -> void:
 		hero.armor_class,
 		hero.movement_left,
 		tr("YES") if hero.action_available else tr("NO"),
+		hero.attack_range,
 	]
 	status_label.text = _status_text()
 	end_turn_button.text = tr("COMBAT_END_TURN")
@@ -388,18 +478,22 @@ func _is_reachable_from_hero(cell: Vector2i) -> bool:
 	if encounter.active_team != CombatEncounter.TEAM_HERO or awaiting_enemy_turn:
 		return false
 	var hero := encounter.get_hero()
-	return encounter.can_move(hero, cell, BLOCKED_CELLS)
+	return encounter.can_move(hero, cell)
 
 
 func _grid_to_screen(cell: Vector2i) -> Vector2:
-	return BOARD_ORIGIN + Vector2(
+	var elevation_offset := Vector2(
+		0,
+		-9 * encounter.battlefield.elevation_at(cell) * camera_zoom
+	)
+	return BOARD_ORIGIN + camera_offset + Vector2(
 		(cell.x - cell.y) * TILE_SIZE.x / 2.0,
 		(cell.x + cell.y) * TILE_SIZE.y / 2.0
-	)
+	) * camera_zoom + elevation_offset
 
 
 func _screen_to_grid(screen_position: Vector2) -> Vector2i:
-	var local := screen_position - BOARD_ORIGIN
+	var local := (screen_position - BOARD_ORIGIN - camera_offset) / camera_zoom
 	var grid_x := (local.x / (TILE_SIZE.x / 2.0) + local.y / (TILE_SIZE.y / 2.0)) / 2.0
 	var grid_y := (local.y / (TILE_SIZE.y / 2.0) - local.x / (TILE_SIZE.x / 2.0)) / 2.0
 	return Vector2i(roundi(grid_x), roundi(grid_y))
@@ -407,3 +501,8 @@ func _screen_to_grid(screen_position: Vector2) -> Vector2i:
 
 func _is_inside_board(cell: Vector2i) -> bool:
 	return cell.x >= 0 and cell.y >= 0 and cell.x < BOARD_SIZE.x and cell.y < BOARD_SIZE.y
+
+
+func _set_camera_zoom(value: float) -> void:
+	camera_zoom = clampf(value, 0.75, 1.3)
+	queue_redraw()

@@ -69,7 +69,7 @@ outside that permission must be original. See `LEGAL.md`.
 
 ## Current implementation state
 
-Tactical sandbox build 0.2.0:
+Tactical sandbox build 0.3.0:
 
 - Godot project structure;
 - desktop title screen;
@@ -83,6 +83,13 @@ Tactical sandbox build 0.2.0:
 - alternating hero/enemy team turns;
 - keyboard, mouse and basic controller input;
 - visible combat roll log;
+- terrain elevation and high-ground attack bonus;
+- cover-based armor class bonus and line-of-sight blockers;
+- fire and water surface representation, with fire entry damage;
+- ranged enemy attacks;
+- attacks of opportunity using reactions;
+- tactical camera zoom;
+- improved HUD framing and original art-direction reference;
 - deterministic combat unit test and tactical scene smoke test;
 - archived browser prototype.
 

@@ -197,6 +197,10 @@ Implemented:
 - alternating team turns and deterministic d20 action records;
 - keyboard, mouse and controller-ready input actions;
 - headless combat and scene smoke tests.
+- battlefield model for elevation, cover, blocking and elemental surfaces;
+- line-of-sight and ranged attack rules;
+- reaction attacks triggered by leaving melee reach;
+- presentation zoom independent from logical grid coordinates.
 
 Validated with Godot 4.6.3:
 

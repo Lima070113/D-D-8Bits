@@ -29,9 +29,10 @@ Goal: one polished isometric encounter proving the core rules.
 - [x] one hero with Fighter level 1 combat statistics;
 - [x] alternating team initiative;
 - [x] movement, attack action and visible d20 records;
-- [ ] camera movement and zoom;
-- [ ] reactions and opportunity attacks;
-- [ ] height and cover;
+- [x] camera zoom;
+- [ ] camera movement;
+- [x] reactions and opportunity attacks;
+- [x] height and cover foundation;
 - fire, water and electricity surfaces;
 - one autonomous companion with general orders;
 - enemy morale, surrender and flight;

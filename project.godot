@@ -64,6 +64,14 @@ end_turn={
 "deadzone": 0.5,
 "events": [Object(InputEventKey,"physical_keycode":69), Object(InputEventJoypadButton,"button_index":3)]
 }
+camera_zoom_in={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"physical_keycode":81), Object(InputEventJoypadButton,"button_index":9)]
+}
+camera_zoom_out={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"physical_keycode":82), Object(InputEventJoypadButton,"button_index":10)]
+}
 
 [internationalization]
 
