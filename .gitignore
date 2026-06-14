@@ -15,3 +15,4 @@ Thumbs.db
 # Local saves and test output
 user-data/
 test-results/
+tmp/

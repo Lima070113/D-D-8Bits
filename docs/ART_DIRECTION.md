@@ -34,3 +34,12 @@ will be authored as modular assets with documented provenance.
 Prompt summary: original isometric fantasy tactical battle at dusk, lone
 blue-armored adventurer, two raiders, ruined wet courtyard, elevation, cover,
 fire, modern detailed pixel art, no text or franchise branding.
+
+## First production derivatives
+
+Build 0.4.0 introduces original hero and raider sprites under
+`assets/art/characters/`. They were generated from project-specific prompts,
+processed to transparent PNG and resized with nearest-neighbor sampling.
+
+These are vertical-slice assets. Final production requires directional poses,
+animation frames, equipment variants and an authored modular environment set.

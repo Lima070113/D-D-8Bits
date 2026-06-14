@@ -201,6 +201,9 @@ Implemented:
 - line-of-sight and ranged attack rules;
 - reaction attacks triggered by leaving melee reach;
 - presentation zoom independent from logical grid coordinates.
+- transparent character texture rendering with geometry fallback retained by
+  the domain-independent presentation layer;
+- project-local asset provenance documentation.
 
 Validated with Godot 4.6.3:
 

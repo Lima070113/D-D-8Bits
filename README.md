@@ -27,9 +27,10 @@ registrada em `docs/GAME_DESIGN.md`; a ordem de implementacao esta em
 5. Aproxime-se de um inimigo e selecione-o para atacar.
 6. Pressione `E` ou o botao **Encerrar turno** para permitir a acao inimiga.
 
-O sandbox 0.2.0 possui uma arena isometrica, movimento por celulas, duas unidades
-inimigas, turnos alternados, ataques com d20, CA, dano, criticos e registro das
-rolagens. Ele e o primeiro recorte do combate, nao a campanha completa.
+O vertical slice 0.4.0 possui uma arena isometrica, sprites pixel-art originais,
+movimento por celulas, duas unidades inimigas, turnos alternados, ataques com
+d20, altura, cobertura, superficies, reacoes e registro das rolagens. Ele e o
+primeiro recorte visual e tatico, nao a campanha completa.
 
 ## Plataformas
 

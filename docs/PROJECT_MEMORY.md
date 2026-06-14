@@ -69,7 +69,7 @@ outside that permission must be original. See `LEGAL.md`.
 
 ## Current implementation state
 
-Tactical sandbox build 0.3.0:
+Tactical visual slice build 0.4.0:
 
 - Godot project structure;
 - desktop title screen;
@@ -90,6 +90,10 @@ Tactical sandbox build 0.3.0:
 - attacks of opportunity using reactions;
 - tactical camera zoom;
 - improved HUD framing and original art-direction reference;
+- original transparent pixel-art hero and raider sprites;
+- sprite shadows, team rings, selection ring and unit labels;
+- moonlit ruin silhouettes, torch glows and vignette treatment;
+- asset provenance records and generated-source traceability;
 - deterministic combat unit test and tactical scene smoke test;
 - archived browser prototype.
 

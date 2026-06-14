@@ -33,6 +33,10 @@ Goal: one polished isometric encounter proving the core rules.
 - [ ] camera movement;
 - [x] reactions and opportunity attacks;
 - [x] height and cover foundation;
+- [x] first original character sprite pass;
+- [x] first atmospheric ruin and lighting pass;
+- [ ] directional sprite poses and combat animations;
+- [ ] modular authored terrain tiles and props;
 - fire, water and electricity surfaces;
 - one autonomous companion with general orders;
 - enemy morale, surrender and flight;

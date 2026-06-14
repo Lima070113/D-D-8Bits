@@ -89,7 +89,7 @@ func _build_interface() -> void:
 	layout.add_child(status_label)
 
 	var version := Label.new()
-	version.text = "TACTICAL SANDBOX 0.2.0"
+	version.text = "TACTICAL VISUAL SLICE 0.4.0"
 	version.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	version.add_theme_color_override("font_color", Color("#606979"))
 	layout.add_child(version)

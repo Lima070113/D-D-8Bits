@@ -1,6 +1,8 @@
 extends Control
 
 const TacticalBattlefieldScript = preload("res://src/domain/combat/tactical_battlefield.gd")
+const HERO_TEXTURE = preload("res://assets/art/characters/hero-fighter.png")
+const RAIDER_TEXTURE = preload("res://assets/art/characters/raider.png")
 
 const BOARD_SIZE := Vector2i(8, 8)
 const TILE_SIZE := Vector2(72.0, 36.0)
@@ -17,6 +19,7 @@ const COLOR_HERO := Color("#4e83bd")
 const COLOR_ENEMY := Color("#b84b4f")
 const COLOR_WATER := Color("#347b91")
 const COLOR_FIRE := Color("#d87532")
+const COLOR_MOONLIGHT := Color("#6c8eb5")
 
 var encounter: CombatEncounter = CombatEncounter.new()
 var selected_cell := Vector2i(1, 5)
@@ -102,6 +105,7 @@ func _build_interface() -> void:
 
 func _draw() -> void:
 	draw_rect(Rect2(Vector2.ZERO, size), COLOR_BACKGROUND)
+	_draw_atmosphere()
 	for star in [
 		Vector2(374, 38), Vector2(492, 71), Vector2(716, 42),
 		Vector2(855, 92), Vector2(1137, 34), Vector2(1210, 178),
@@ -129,6 +133,43 @@ func _draw() -> void:
 	for unit in sorted_units:
 		if unit.is_alive():
 			_draw_unit(unit)
+
+	_draw_vignette()
+
+
+func _draw_atmosphere() -> void:
+	draw_circle(Vector2(785, 96), 105, Color(0.15, 0.21, 0.32, 0.16))
+	draw_circle(Vector2(785, 96), 64, Color(0.28, 0.39, 0.55, 0.12))
+	draw_circle(Vector2(785, 96), 28, Color(0.58, 0.68, 0.78, 0.18))
+
+	var ruin_color := Color("#131b25")
+	draw_colored_polygon(
+		PackedVector2Array([
+			Vector2(330, 175), Vector2(390, 128), Vector2(445, 160),
+			Vector2(505, 104), Vector2(565, 151), Vector2(620, 119),
+			Vector2(690, 172), Vector2(690, 270), Vector2(330, 270),
+		]),
+		ruin_color
+	)
+	for x in range(350, 890, 86):
+		draw_rect(Rect2(x, 180 + ((x / 86) % 2) * 16, 22, 112), Color("#18222c"))
+		draw_rect(Rect2(x - 7, 173 + ((x / 86) % 2) * 16, 36, 10), Color("#202c37"))
+
+	for position in [Vector2(430, 177), Vector2(854, 224)]:
+		draw_circle(position, 22, Color(0.91, 0.43, 0.15, 0.06))
+		draw_circle(position, 12, Color(1.0, 0.62, 0.2, 0.11))
+		draw_circle(position, 4, Color("#ffb347"))
+
+
+func _draw_vignette() -> void:
+	for index in range(8):
+		var alpha := 0.018 + index * 0.006
+		draw_rect(
+			Rect2(index * 5, index * 5, size.x - index * 10, size.y - index * 10),
+			Color(0, 0, 0, alpha),
+			false,
+			8
+		)
 
 
 func _draw_cell(cell: Vector2i) -> void:
@@ -199,24 +240,34 @@ func _draw_cell(cell: Vector2i) -> void:
 
 func _draw_unit(unit: TacticalUnit) -> void:
 	var base := _grid_to_screen(unit.grid_position)
-	var color := COLOR_HERO if unit.team == CombatEncounter.TEAM_HERO else COLOR_ENEMY
-	draw_circle(base + Vector2(0, 7) * camera_zoom, 19 * camera_zoom, Color(0, 0, 0, 0.24))
-	draw_circle(base - Vector2(0, 23) * camera_zoom, 15 * camera_zoom, color)
-	draw_rect(
-		Rect2(
-			base + Vector2(-13, -24) * camera_zoom,
-			Vector2(26, 29) * camera_zoom
-		),
-		color
+	var is_hero := unit.team == CombatEncounter.TEAM_HERO
+	var texture: Texture2D = HERO_TEXTURE if is_hero else RAIDER_TEXTURE
+	var ring_color := COLOR_HERO if is_hero else COLOR_ENEMY
+	var sprite_size := Vector2(112, 112) * camera_zoom
+	var sprite_rect := Rect2(
+		base + Vector2(-56, -103) * camera_zoom,
+		sprite_size
 	)
-	draw_circle(base + Vector2(-5, -28) * camera_zoom, 2.5 * camera_zoom, Color.WHITE)
-	draw_circle(base + Vector2(5, -28) * camera_zoom, 2.5 * camera_zoom, Color.WHITE)
-	draw_line(
-		base + Vector2(-15, 8) * camera_zoom,
-		base + Vector2(15, 8) * camera_zoom,
-		Color("#10131a"),
-		5 * camera_zoom
-	)
+
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2(1.0, 0.44))
+	draw_circle(base / Vector2(1.0, 0.44), 27 * camera_zoom, Color(0, 0, 0, 0.42))
+	draw_set_transform(Vector2.ZERO)
+	draw_arc(base, 27 * camera_zoom, 0, TAU, 32, ring_color, 3 * camera_zoom)
+	if unit.grid_position == selected_cell:
+		draw_arc(
+			base,
+			32 * camera_zoom,
+			0,
+			TAU,
+			32,
+			Color("#f2c14e"),
+			2 * camera_zoom
+		)
+
+	var tint := Color.WHITE
+	if unit.id == "raider_2":
+		tint = Color("#d8c2b4")
+	draw_texture_rect(texture, sprite_rect, false, tint)
 
 	var hp_ratio := float(unit.hp) / float(unit.max_hp)
 	draw_rect(
@@ -229,6 +280,16 @@ func _draw_unit(unit: TacticalUnit) -> void:
 			Vector2(40 * hp_ratio, 5) * camera_zoom
 		),
 		Color("#61b86b")
+	)
+	var font := ThemeDB.fallback_font
+	draw_string(
+		font,
+		base + Vector2(-34, 29) * camera_zoom,
+		tr(unit.display_name),
+		HORIZONTAL_ALIGNMENT_CENTER,
+		68 * camera_zoom,
+		11 * camera_zoom,
+		Color("#dfe7ef")
 	)
 
 
