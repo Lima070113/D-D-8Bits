@@ -60,7 +60,7 @@ Exit: a 20-minute encounter is enjoyable and understandable to a beginner.
 ### Modular scenery steps
 
 - [x] Step 1: terrain catalog, stone, cracked stone, water and elevation sides;
-- [ ] Step 2: map borders, walls and ruined wall variants;
+- [x] Step 2: map borders, walls and ruined wall variants;
 - [ ] Step 3: columns, barricades and destructible props;
 - [ ] Step 4: moss, vegetation, rubble and environmental dressing;
 - [ ] Step 5: lighting integration, particles and final readability pass.

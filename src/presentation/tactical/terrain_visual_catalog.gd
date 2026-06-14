@@ -11,6 +11,10 @@ const CRACKED_DARK := Color("#38383e")
 const WATER_LIGHT := Color("#2f788d")
 const WATER_DARK := Color("#275d73")
 const WATER_EDGE := Color("#67b8ca")
+const WALL_TOP := Color("#7a777a")
+const WALL_FRONT := Color("#48464d")
+const WALL_SIDE := Color("#383840")
+const WALL_MORTAR := Color("#292a30")
 
 
 func top_color(terrain: int, cell: Vector2i) -> Color:
@@ -43,3 +47,11 @@ func side_color(terrain: int, right_side: bool) -> Color:
 func detail_variant(cell: Vector2i) -> int:
 	var value := cell.x * 73856093 ^ cell.y * 19349663
 	return absi(value) % 4
+
+
+func wall_height(wall_type: int) -> float:
+	if wall_type == TacticalBattlefieldScript.WALL_RUINED:
+		return 24.0
+	if wall_type == TacticalBattlefieldScript.WALL_FULL:
+		return 52.0
+	return 0.0

@@ -2,7 +2,8 @@ extends Node
 
 
 func _ready() -> void:
-	GameSession.start_campaign(
+	var game_session := get_node("/root/GameSession")
+	game_session.start_campaign(
 		{
 			"display_seed": "TEST-SEED",
 			"numeric_seed": 12345,

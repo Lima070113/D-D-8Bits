@@ -97,6 +97,9 @@ Tactical visual slice build 0.4.0:
 - modular terrain catalog separated from combat rules;
 - stone, cracked-stone and water terrain modules;
 - elevation rendered with distinct isometric side faces;
+- modular map-border parapets plus full and ruined wall variants;
+- full walls block movement and line of sight;
+- ruined walls block movement, allow line of sight and provide cover;
 - deterministic combat unit test and tactical scene smoke test;
 - archived browser prototype.
 

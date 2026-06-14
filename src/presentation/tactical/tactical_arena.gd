@@ -127,6 +127,16 @@ func _draw() -> void:
 				continue
 			_draw_cell(Vector2i(x, y))
 
+	_draw_boundary_walls()
+	for diagonal in range(BOARD_SIZE.x + BOARD_SIZE.y - 1):
+		for x in range(BOARD_SIZE.x):
+			var y := diagonal - x
+			if y < 0 or y >= BOARD_SIZE.y:
+				continue
+			var cell := Vector2i(x, y)
+			if encounter.battlefield.wall_at(cell) != TacticalBattlefieldScript.WALL_NONE:
+				_draw_wall(cell)
+
 	var sorted_units := encounter.units.duplicate()
 	sorted_units.sort_custom(
 		func(first, second): return (
@@ -207,27 +217,7 @@ func _draw_cell(cell: Vector2i) -> void:
 	)
 	_draw_terrain_detail(cell, center, terrain)
 
-	if encounter.battlefield.is_blocked(cell):
-		var top := center - Vector2(0, 18) * camera_zoom
-		draw_colored_polygon(
-			PackedVector2Array([
-				top + Vector2(0, -22) * camera_zoom,
-				top + Vector2(23, -10) * camera_zoom,
-				top + Vector2(0, 2) * camera_zoom,
-				top + Vector2(-23, -10) * camera_zoom,
-			]),
-			Color("#605668")
-		)
-		draw_colored_polygon(
-			PackedVector2Array([
-				top + Vector2(-23, -10) * camera_zoom,
-				top + Vector2(0, 2) * camera_zoom,
-				center,
-				center + Vector2(-23, -12) * camera_zoom,
-			]),
-			Color("#403a47")
-		)
-	elif encounter.battlefield.cover_at(cell) > 0:
+	if encounter.battlefield.cover_at(cell) > 0:
 		draw_line(
 			center + Vector2(-18, -5) * camera_zoom,
 			center + Vector2(18, 5) * camera_zoom,
@@ -240,6 +230,125 @@ func _draw_cell(cell: Vector2i) -> void:
 		draw_circle(center - Vector2(4, 13) * camera_zoom, 4 * camera_zoom, Color("#e84f2f"))
 	elif terrain == TacticalBattlefieldScript.TERRAIN_WATER:
 		draw_arc(center, 13 * camera_zoom, 0.2, 2.9, 12, Color("#72c8d8"), 2 * camera_zoom)
+
+
+func _draw_boundary_walls() -> void:
+	var boundary_cells: Array[Vector2i] = [
+		Vector2i(0, 0), Vector2i(1, 0), Vector2i(2, 0),
+		Vector2i(5, 0), Vector2i(6, 0), Vector2i(7, 0),
+		Vector2i(0, 1), Vector2i(0, 2), Vector2i(0, 5), Vector2i(0, 6),
+		Vector2i(2, 7), Vector2i(3, 7), Vector2i(4, 7),
+		Vector2i(7, 5), Vector2i(7, 6),
+	]
+	for cell in boundary_cells:
+		_draw_parapet(cell)
+
+
+func _draw_parapet(cell: Vector2i) -> void:
+	var center := _grid_to_screen(cell)
+	var points := PackedVector2Array([
+		center + Vector2(0, -TILE_SIZE.y / 2.0) * camera_zoom,
+		center + Vector2(TILE_SIZE.x / 2.0, 0) * camera_zoom,
+		center + Vector2(0, TILE_SIZE.y / 2.0) * camera_zoom,
+		center + Vector2(-TILE_SIZE.x / 2.0, 0) * camera_zoom,
+	])
+	var variant := terrain_visuals.detail_variant(cell)
+	var height := (9.0 if variant == 0 else 14.0) * camera_zoom
+	var edge_start: Vector2
+	var edge_end: Vector2
+	if cell.y == 0:
+		edge_start = points[0]
+		edge_end = points[1]
+	elif cell.x == 0:
+		edge_start = points[3]
+		edge_end = points[0]
+	elif cell.y == BOARD_SIZE.y - 1:
+		edge_start = points[3]
+		edge_end = points[2]
+	else:
+		edge_start = points[2]
+		edge_end = points[1]
+
+	var top_start := edge_start - Vector2(0, height)
+	var top_end := edge_end - Vector2(0, height)
+	draw_colored_polygon(
+		PackedVector2Array([
+			top_start, top_end, edge_end, edge_start,
+		]),
+		Color("#32343b")
+	)
+	draw_line(top_start, top_end, Color("#77777b"), 2 * camera_zoom)
+	draw_line(edge_start, edge_end, Color("#20242a"), 1.5 * camera_zoom)
+	if variant == 0:
+		var middle := top_start.lerp(top_end, 0.52)
+		draw_line(
+			middle,
+			middle + Vector2(3, height),
+			Color("#1f2228"),
+			2 * camera_zoom
+		)
+
+
+func _draw_wall(cell: Vector2i) -> void:
+	var wall_type: int = encounter.battlefield.wall_at(cell)
+	var center := _grid_to_screen(cell)
+	var wall_height := terrain_visuals.wall_height(wall_type) * camera_zoom
+	var width := 54.0 * camera_zoom
+	var depth := 13.0 * camera_zoom
+	var base_y := center.y + 2 * camera_zoom
+	var top_y := base_y - wall_height
+	var left := Vector2(center.x - width / 2.0, base_y)
+	var right := Vector2(center.x + width / 2.0, base_y)
+
+	draw_colored_polygon(
+		PackedVector2Array([
+			Vector2(left.x, top_y),
+			Vector2(right.x, top_y),
+			right,
+			left,
+		]),
+		terrain_visuals.WALL_FRONT
+	)
+	draw_colored_polygon(
+		PackedVector2Array([
+			Vector2(left.x, top_y),
+			Vector2(left.x + depth, top_y - depth * 0.45),
+			Vector2(right.x + depth, top_y - depth * 0.45),
+			Vector2(right.x, top_y),
+		]),
+		terrain_visuals.WALL_TOP
+	)
+	draw_colored_polygon(
+		PackedVector2Array([
+			Vector2(right.x, top_y),
+			Vector2(right.x + depth, top_y - depth * 0.45),
+			Vector2(right.x + depth, base_y - depth * 0.45),
+			right,
+		]),
+		terrain_visuals.WALL_SIDE
+	)
+
+	var rows := 3 if wall_type == TacticalBattlefieldScript.WALL_FULL else 1
+	for row in range(rows):
+		var mortar_y := base_y - (row + 1) * wall_height / float(rows + 1)
+		draw_line(
+			Vector2(left.x + 3, mortar_y),
+			Vector2(right.x - 3, mortar_y),
+			terrain_visuals.WALL_MORTAR,
+			1.2 * camera_zoom
+		)
+
+	if wall_type == TacticalBattlefieldScript.WALL_RUINED:
+		var notch := terrain_visuals.detail_variant(cell)
+		var notch_x := lerpf(left.x + 8, right.x - 8, float(notch) / 3.0)
+		draw_colored_polygon(
+			PackedVector2Array([
+				Vector2(notch_x - 8, top_y - 2),
+				Vector2(notch_x, top_y + 10),
+				Vector2(notch_x + 9, top_y - 2),
+			]),
+			COLOR_BACKGROUND
+		)
 
 
 func _draw_elevation_sides(

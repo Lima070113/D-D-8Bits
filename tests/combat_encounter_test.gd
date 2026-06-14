@@ -36,6 +36,18 @@ func _init() -> void:
 		== TacticalBattlefieldScript.SURFACE_FIRE
 	)
 	assert(encounter.battlefield.elevation_at(Vector2i(5, 2)) == 1)
+	assert(
+		encounter.battlefield.wall_at(Vector2i(3, 3))
+		== TacticalBattlefieldScript.WALL_FULL
+	)
+	assert(
+		encounter.battlefield.wall_at(Vector2i(3, 4))
+		== TacticalBattlefieldScript.WALL_RUINED
+	)
+	assert(encounter.battlefield.is_blocked(Vector2i(3, 4)))
+	assert(not encounter.battlefield.has_line_of_sight(Vector2i(2, 3), Vector2i(4, 3)))
+	assert(encounter.battlefield.has_line_of_sight(Vector2i(2, 4), Vector2i(4, 4)))
+	assert(encounter.battlefield.attack_modifiers(Vector2i(2, 4), Vector2i(3, 4)).cover_bonus == 2)
 
 	encounter.finish_team_turn()
 	assert(encounter.active_team == CombatEncounter.TEAM_ENEMY)

@@ -206,6 +206,9 @@ Implemented:
 - project-local asset provenance documentation.
 - terrain type is persistent cell data, separate from temporary surfaces;
 - presentation resolves terrain through a modular visual catalog;
+- wall type is persistent cell data with full and ruined variants;
+- all walls block movement, while only full walls block line of sight;
+- ruined walls grant cover to units occupying their cell;
 
 Validated with Godot 4.6.3:
 
