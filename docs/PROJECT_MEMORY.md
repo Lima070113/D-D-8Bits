@@ -94,6 +94,9 @@ Tactical visual slice build 0.4.0:
 - sprite shadows, team rings, selection ring and unit labels;
 - moonlit ruin silhouettes, torch glows and vignette treatment;
 - asset provenance records and generated-source traceability;
+- modular terrain catalog separated from combat rules;
+- stone, cracked-stone and water terrain modules;
+- elevation rendered with distinct isometric side faces;
 - deterministic combat unit test and tactical scene smoke test;
 - archived browser prototype.
 

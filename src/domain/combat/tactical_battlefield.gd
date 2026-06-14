@@ -3,13 +3,17 @@ extends RefCounted
 
 const SURFACE_NONE := 0
 const SURFACE_FIRE := 1
-const SURFACE_WATER := 2
+
+const TERRAIN_STONE := 0
+const TERRAIN_CRACKED_STONE := 1
+const TERRAIN_WATER := 2
 
 var size := Vector2i(8, 8)
 var blocked_cells: Array[Vector2i] = []
 var elevations: Dictionary = {}
 var cover_cells: Dictionary = {}
 var surfaces: Dictionary = {}
+var terrain: Dictionary = {}
 
 
 func setup_demo() -> void:
@@ -33,11 +37,19 @@ func setup_demo() -> void:
 		Vector2i(5, 3): 2,
 	}
 	surfaces = {
-		Vector2i(1, 2): SURFACE_WATER,
-		Vector2i(2, 2): SURFACE_WATER,
-		Vector2i(2, 1): SURFACE_WATER,
 		Vector2i(6, 3): SURFACE_FIRE,
 		Vector2i(6, 4): SURFACE_FIRE,
+	}
+	terrain = {
+		Vector2i(1, 2): TERRAIN_WATER,
+		Vector2i(2, 2): TERRAIN_WATER,
+		Vector2i(2, 1): TERRAIN_WATER,
+		Vector2i(0, 0): TERRAIN_CRACKED_STONE,
+		Vector2i(1, 0): TERRAIN_CRACKED_STONE,
+		Vector2i(3, 1): TERRAIN_CRACKED_STONE,
+		Vector2i(4, 2): TERRAIN_CRACKED_STONE,
+		Vector2i(5, 4): TERRAIN_CRACKED_STONE,
+		Vector2i(7, 6): TERRAIN_CRACKED_STONE,
 	}
 
 
@@ -59,6 +71,10 @@ func cover_at(cell: Vector2i) -> int:
 
 func surface_at(cell: Vector2i) -> int:
 	return int(surfaces.get(cell, SURFACE_NONE))
+
+
+func terrain_at(cell: Vector2i) -> int:
+	return int(terrain.get(cell, TERRAIN_STONE))
 
 
 func has_line_of_sight(origin: Vector2i, target: Vector2i) -> bool:

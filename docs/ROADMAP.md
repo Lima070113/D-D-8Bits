@@ -37,12 +37,33 @@ Goal: one polished isometric encounter proving the core rules.
 - [x] first atmospheric ruin and lighting pass;
 - [ ] directional sprite poses and combat animations;
 - [ ] modular authored terrain tiles and props;
+- [x] modular terrain catalog foundation;
+- [x] stone, cracked-stone and water tile modules;
+- [x] proper isometric elevation side faces;
 - fire, water and electricity surfaces;
 - one autonomous companion with general orders;
 - enemy morale, surrender and flight;
 - save/load inside combat.
 
 Exit: a 20-minute encounter is enjoyable and understandable to a beginner.
+
+### Current production order
+
+1. modular scenery;
+2. character animation;
+3. elemental combat;
+4. AI behavior;
+5. complete combat rules;
+6. save/load during combat;
+7. first exploration slice.
+
+### Modular scenery steps
+
+- [x] Step 1: terrain catalog, stone, cracked stone, water and elevation sides;
+- [ ] Step 2: map borders, walls and ruined wall variants;
+- [ ] Step 3: columns, barricades and destructible props;
+- [ ] Step 4: moss, vegetation, rubble and environmental dressing;
+- [ ] Step 5: lighting integration, particles and final readability pass.
 
 ## Milestone 2: Exploration slice
 

@@ -204,6 +204,8 @@ Implemented:
 - transparent character texture rendering with geometry fallback retained by
   the domain-independent presentation layer;
 - project-local asset provenance documentation.
+- terrain type is persistent cell data, separate from temporary surfaces;
+- presentation resolves terrain through a modular visual catalog;
 
 Validated with Godot 4.6.3:
 

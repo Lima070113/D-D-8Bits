@@ -24,6 +24,14 @@ func _init() -> void:
 	var scout: TacticalUnit = encounter.get_living_units(CombatEncounter.TEAM_ENEMY)[1]
 	assert(scout.attack_range == 4)
 	assert(
+		encounter.battlefield.terrain_at(Vector2i(1, 2))
+		== TacticalBattlefieldScript.TERRAIN_WATER
+	)
+	assert(
+		encounter.battlefield.terrain_at(Vector2i(0, 0))
+		== TacticalBattlefieldScript.TERRAIN_CRACKED_STONE
+	)
+	assert(
 		encounter.battlefield.surface_at(Vector2i(6, 3))
 		== TacticalBattlefieldScript.SURFACE_FIRE
 	)

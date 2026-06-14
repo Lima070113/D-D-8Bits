@@ -1,6 +1,9 @@
 extends Control
 
 const TacticalBattlefieldScript = preload("res://src/domain/combat/tactical_battlefield.gd")
+const TerrainVisualCatalogScript = preload(
+	"res://src/presentation/tactical/terrain_visual_catalog.gd"
+)
 const HERO_TEXTURE = preload("res://assets/art/characters/hero-fighter.png")
 const RAIDER_TEXTURE = preload("res://assets/art/characters/raider.png")
 
@@ -22,6 +25,7 @@ const COLOR_FIRE := Color("#d87532")
 const COLOR_MOONLIGHT := Color("#6c8eb5")
 
 var encounter: CombatEncounter = CombatEncounter.new()
+var terrain_visuals = TerrainVisualCatalogScript.new()
 var selected_cell := Vector2i(1, 5)
 var awaiting_enemy_turn := false
 var battle_finished := false
@@ -180,11 +184,10 @@ func _draw_cell(cell: Vector2i) -> void:
 		center + Vector2(0, TILE_SIZE.y / 2.0) * camera_zoom,
 		center + Vector2(-TILE_SIZE.x / 2.0, 0) * camera_zoom,
 	])
-	var color := COLOR_TILE_LIGHT if (cell.x + cell.y) % 2 == 0 else COLOR_TILE_DARK
+	var terrain: int = encounter.battlefield.terrain_at(cell)
+	var color: Color = terrain_visuals.top_color(terrain, cell)
 	var surface: int = encounter.battlefield.surface_at(cell)
-	if surface == TacticalBattlefieldScript.SURFACE_WATER:
-		color = color.lerp(COLOR_WATER, 0.65)
-	elif surface == TacticalBattlefieldScript.SURFACE_FIRE:
+	if surface == TacticalBattlefieldScript.SURFACE_FIRE:
 		color = color.lerp(COLOR_FIRE, 0.72)
 	if encounter.battlefield.is_blocked(cell):
 		color = COLOR_BLOCKED
@@ -192,16 +195,17 @@ func _draw_cell(cell: Vector2i) -> void:
 		color = color.lerp(COLOR_MOVE, 0.35)
 	if cell == selected_cell:
 		color = color.lerp(COLOR_CURSOR, 0.5)
-	draw_colored_polygon(points, color)
-	draw_polyline(points + PackedVector2Array([points[0]]), COLOR_TILE_BORDER, 1.5)
-
 	var elevation: int = encounter.battlefield.elevation_at(cell)
 	if elevation > 0 and not encounter.battlefield.is_blocked(cell):
-		var lower_points := PackedVector2Array()
-		for point in points:
-			lower_points.append(point + Vector2(0, 9 * elevation * camera_zoom))
-		draw_colored_polygon(lower_points, Color("#222932"))
-		draw_polyline(lower_points + PackedVector2Array([lower_points[0]]), COLOR_TILE_BORDER, 1.2)
+		_draw_elevation_sides(points, terrain, elevation)
+
+	draw_colored_polygon(points, color)
+	draw_polyline(
+		points + PackedVector2Array([points[0]]),
+		terrain_visuals.edge_color(terrain),
+		1.5
+	)
+	_draw_terrain_detail(cell, center, terrain)
 
 	if encounter.battlefield.is_blocked(cell):
 		var top := center - Vector2(0, 18) * camera_zoom
@@ -234,8 +238,72 @@ func _draw_cell(cell: Vector2i) -> void:
 	if surface == TacticalBattlefieldScript.SURFACE_FIRE:
 		draw_circle(center - Vector2(0, 8) * camera_zoom, 7 * camera_zoom, Color("#ffb347"))
 		draw_circle(center - Vector2(4, 13) * camera_zoom, 4 * camera_zoom, Color("#e84f2f"))
-	elif surface == TacticalBattlefieldScript.SURFACE_WATER:
+	elif terrain == TacticalBattlefieldScript.TERRAIN_WATER:
 		draw_arc(center, 13 * camera_zoom, 0.2, 2.9, 12, Color("#72c8d8"), 2 * camera_zoom)
+
+
+func _draw_elevation_sides(
+	points: PackedVector2Array,
+	terrain: int,
+	elevation: int
+) -> void:
+	var depth := 12.0 * elevation * camera_zoom
+	var bottom := PackedVector2Array()
+	for point in points:
+		bottom.append(point + Vector2(0, depth))
+
+	var left_face := PackedVector2Array([
+		points[3], points[2], bottom[2], bottom[3],
+	])
+	var right_face := PackedVector2Array([
+		points[2], points[1], bottom[1], bottom[2],
+	])
+	draw_colored_polygon(left_face, terrain_visuals.side_color(terrain, false))
+	draw_colored_polygon(right_face, terrain_visuals.side_color(terrain, true))
+	draw_polyline(
+		left_face + PackedVector2Array([left_face[0]]),
+		Color("#172027"),
+		1.0
+	)
+	draw_polyline(
+		right_face + PackedVector2Array([right_face[0]]),
+		Color("#172027"),
+		1.0
+	)
+
+
+func _draw_terrain_detail(cell: Vector2i, center: Vector2, terrain: int) -> void:
+	var variant: int = terrain_visuals.detail_variant(cell)
+	if terrain == TacticalBattlefieldScript.TERRAIN_WATER:
+		var offset := float(variant - 1) * 3.0 * camera_zoom
+		draw_line(
+			center + Vector2(-15, offset) * camera_zoom,
+			center + Vector2(3, offset + 4) * camera_zoom,
+			Color(0.48, 0.82, 0.9, 0.72),
+			1.5 * camera_zoom
+		)
+		return
+
+	if terrain == TacticalBattlefieldScript.TERRAIN_CRACKED_STONE:
+		var direction := -1.0 if variant % 2 == 0 else 1.0
+		draw_polyline(
+			PackedVector2Array([
+				center + Vector2(-10 * direction, -3) * camera_zoom,
+				center + Vector2(-2 * direction, 1) * camera_zoom,
+				center + Vector2(5 * direction, -1) * camera_zoom,
+				center + Vector2(11 * direction, 4) * camera_zoom,
+			]),
+			Color("#22262b"),
+			1.5 * camera_zoom
+		)
+		return
+
+	if variant == 0:
+		draw_circle(
+			center + Vector2(-9, 2) * camera_zoom,
+			2.0 * camera_zoom,
+			Color(0.25, 0.38, 0.32, 0.65)
+		)
 
 
 func _draw_unit(unit: TacticalUnit) -> void:

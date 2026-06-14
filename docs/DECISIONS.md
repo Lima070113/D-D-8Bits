@@ -73,3 +73,12 @@ refuge upgrades and specialists.
 **Decision:** Portuguese and English are architectural requirements from the
 first milestone.
 **Reason:** procedural grammar and UI cannot be safely retrofitted late.
+
+## D-011: Tactical production order
+
+**Status:** accepted
+**Decision:** Complete modular scenery before character animation, then continue
+with elemental combat, AI behavior, complete rules, combat saves and exploration.
+Each area is delivered through small reviewed steps.
+**Reason:** the current mechanics are readable, but the environment is the
+largest gap between the prototype and the approved visual promise.
